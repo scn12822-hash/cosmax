@@ -261,7 +261,7 @@ def render_product_info(df, keys):
         distinct_names = {str(v).strip() for v in df[name_key] if str(v).strip()}
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown("<h2>2. 제품 정보</h2>", unsafe_allow_html=True)
+    st.markdown("<h2>2. 제품 정보 💄</h2>", unsafe_allow_html=True)
     st.markdown('<p class="desc">엑셀에서 인식된 제품 기본 정보입니다.</p>', unsafe_allow_html=True)
 
     if len(distinct_names) > 1:
@@ -430,7 +430,7 @@ def render_summary(df, keys):
     rating_key, text_key = keys["rating"], keys["text"]
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown("<h2>4. 주요 리뷰 반응 요약</h2>", unsafe_allow_html=True)
+    st.markdown("<h2>4. 주요 리뷰 반응 요약 🖌️</h2>", unsafe_allow_html=True)
     st.markdown('<p class="desc">긍정 · 부정 · 중립을 대표하는 리뷰를 한 줄씩 뽑았습니다.</p>', unsafe_allow_html=True)
 
     if not rating_key or not text_key:
