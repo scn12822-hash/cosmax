@@ -15,6 +15,7 @@ st.set_page_config(
 
 APP_DIR = Path(__file__).parent
 HERO_IMAGE_PATH = APP_DIR / "hero_badge.png"
+SAMPLE_CSV_PATH = APP_DIR / "review_sample_multi.csv"
 
 
 # ----------------------------------------------------------------------------
@@ -157,7 +158,7 @@ def render_hero():
         <div class="hero-box" style="background-image:{bg};">
             <div class="logo">🦉</div>
             <h1>🔍 올영리뷰 부엉이</h1>
-            <p>올리브영 리뷰 엑셀을 넣으면<br/>긍정·부정 반응과 개선점을 정리해드려요</p>
+            <p>올리브영 리뷰 엑셀을 넣으면<br/>긍정·부정 반응과 개선점을 정리해드려요 ⭐</p>
             <span class="tag">전략마케팅 · OBM 담당자용</span>
         </div>
         """,
@@ -213,6 +214,13 @@ def load_dataframe(uploaded_file) -> pd.DataFrame:
             return pd.read_csv(uploaded_file, encoding="cp949")
     else:
         return pd.read_excel(uploaded_file)
+
+
+def load_sample_dataframe(path: Path) -> pd.DataFrame:
+    try:
+        return pd.read_csv(path, encoding="utf-8-sig")
+    except UnicodeDecodeError:
+        return pd.read_csv(path, encoding="cp949")
 
 
 # ----------------------------------------------------------------------------
@@ -489,14 +497,21 @@ def main():
     )
     st.markdown("</div>", unsafe_allow_html=True)
 
-    if uploaded_file is None:
+    if uploaded_file is not None:
+        try:
+            df = load_dataframe(uploaded_file)
+        except Exception as e:
+            st.error(f"엑셀 파일을 읽는 중 오류가 발생했습니다: {e}")
+            return
+    elif SAMPLE_CSV_PATH.exists():
+        try:
+            df = load_sample_dataframe(SAMPLE_CSV_PATH)
+        except Exception as e:
+            st.error(f"샘플 데이터를 읽는 중 오류가 발생했습니다: {e}")
+            return
+        st.caption("📎 샘플 데이터(review_sample_multi.csv)로 미리보기 중입니다. 파일을 업로드하면 해당 데이터로 전환됩니다.")
+    else:
         st.info("엑셀(또는 CSV) 파일을 업로드하면 분석 결과가 표시됩니다.")
-        return
-
-    try:
-        df = load_dataframe(uploaded_file)
-    except Exception as e:
-        st.error(f"엑셀 파일을 읽는 중 오류가 발생했습니다: {e}")
         return
 
     df = df.dropna(how="all")
