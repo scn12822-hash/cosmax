@@ -333,7 +333,7 @@ def render_ratio(df, keys):
     rating_key = keys["rating"]
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown("<h2>3. 긍정 · 부정 반응</h2>", unsafe_allow_html=True)
+    st.markdown("<h2>3. 긍정 · 부정 반응 😊</h2>", unsafe_allow_html=True)
     st.markdown('<p class="desc">리뷰 평점 기준으로 계산한 비율입니다.</p>', unsafe_allow_html=True)
 
     if not rating_key:
@@ -502,7 +502,7 @@ def append_memo(text: str):
 
 def render_memo():
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown("<h2>5. 담당자 메모</h2>", unsafe_allow_html=True)
+    st.markdown("<h2>5. 담당자 메모 📝</h2>", unsafe_allow_html=True)
     st.markdown(
         '<p class="desc">리뷰를 검토하며 느낀 의견을 적고 Enter를 누르면 자동으로 저장·기록됩니다.</p>',
         unsafe_allow_html=True,
@@ -546,7 +546,7 @@ def main():
     render_hero()
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown("<h2>1. 리뷰 엑셀 업로드</h2>", unsafe_allow_html=True)
+    st.markdown("<h2>1. 리뷰 엑셀 업로드 📊</h2>", unsafe_allow_html=True)
     st.markdown(
         '<p class="desc">올리브영에서 내려받은 리뷰 데이터(.xlsx, .xls, .csv)를 올려주세요.</p>',
         unsafe_allow_html=True,
