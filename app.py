@@ -480,6 +480,26 @@ def render_summary(df, keys):
 
 
 # ----------------------------------------------------------------------------
+# 렌더링: 담당자 메모
+# ----------------------------------------------------------------------------
+def render_memo():
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.markdown("<h2>5. 담당자 메모</h2>", unsafe_allow_html=True)
+    st.markdown(
+        '<p class="desc">리뷰를 검토하며 느낀 의견이나 개선 아이디어를 자유롭게 적어보세요.</p>',
+        unsafe_allow_html=True,
+    )
+    st.text_area(
+        "담당자 메모",
+        key="reviewer_memo",
+        height=150,
+        placeholder="예: 부정 리뷰에서 흡수력 관련 언급이 많아 제형 개선을 검토해볼 필요가 있어 보입니다.",
+        label_visibility="collapsed",
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+# ----------------------------------------------------------------------------
 # 메인
 # ----------------------------------------------------------------------------
 def main():
@@ -537,6 +557,7 @@ def main():
     render_product_info(filtered_df, keys)
     render_ratio(filtered_df, keys)
     render_summary(filtered_df, keys)
+    render_memo()
 
     st.markdown(
         '<div class="app-footer">올영리뷰 부엉이 · 내부 마케팅 도구 프로토타입</div>',
