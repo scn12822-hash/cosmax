@@ -1,4 +1,5 @@
 import base64
+from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
@@ -16,6 +17,7 @@ st.set_page_config(
 APP_DIR = Path(__file__).parent
 HERO_IMAGE_PATH = APP_DIR / "hero_badge.png"
 SAMPLE_CSV_PATH = APP_DIR / "review_sample_multi.csv"
+MEMO_LOG_PATH = APP_DIR / "memo_log.csv"
 
 
 # ----------------------------------------------------------------------------
@@ -482,20 +484,57 @@ def render_summary(df, keys):
 # ----------------------------------------------------------------------------
 # 렌더링: 담당자 메모
 # ----------------------------------------------------------------------------
+def load_memo_log() -> pd.DataFrame:
+    if MEMO_LOG_PATH.exists():
+        try:
+            return pd.read_csv(MEMO_LOG_PATH, encoding="utf-8-sig")
+        except Exception:
+            pass
+    return pd.DataFrame(columns=["시각", "메모"])
+
+
+def append_memo(text: str):
+    log_df = load_memo_log()
+    new_row = pd.DataFrame([{"시각": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "메모": text}])
+    log_df = pd.concat([log_df, new_row], ignore_index=True)
+    log_df.to_csv(MEMO_LOG_PATH, index=False, encoding="utf-8-sig")
+
+
 def render_memo():
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown("<h2>5. 담당자 메모</h2>", unsafe_allow_html=True)
     st.markdown(
-        '<p class="desc">리뷰를 검토하며 느낀 의견이나 개선 아이디어를 자유롭게 적어보세요.</p>',
+        '<p class="desc">리뷰를 검토하며 느낀 의견을 적고 Enter를 누르면 자동으로 저장·기록됩니다.</p>',
         unsafe_allow_html=True,
     )
-    st.text_area(
-        "담당자 메모",
-        key="reviewer_memo",
-        height=150,
-        placeholder="예: 부정 리뷰에서 흡수력 관련 언급이 많아 제형 개선을 검토해볼 필요가 있어 보입니다.",
-        label_visibility="collapsed",
-    )
+
+    with st.form("memo_form", clear_on_submit=True):
+        memo_text = st.text_input(
+            "담당자 메모",
+            placeholder="예: 부정 리뷰에서 흡수력 관련 언급이 많아 제형 개선을 검토해볼 필요가 있어 보입니다.",
+            label_visibility="collapsed",
+        )
+        submitted = st.form_submit_button("저장", use_container_width=True)
+
+    if submitted and memo_text.strip():
+        append_memo(memo_text.strip())
+        st.success("메모가 저장되었습니다.")
+
+    log_df = load_memo_log()
+    if not log_df.empty:
+        st.markdown('<p class="desc" style="margin-top:14px;">저장된 메모 기록</p>', unsafe_allow_html=True)
+        rows_html = "".join(
+            f"""
+            <div class="line">
+              <span class="text">
+                <span style="color:var(--text-muted); font-size:12px;">{row['시각']}</span><br/>
+                {row['메모']}
+              </span>
+            </div>
+            """
+            for _, row in log_df.iloc[::-1].iterrows()
+        )
+        st.markdown(f'<div class="review-summary">{rows_html}</div>', unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
 
